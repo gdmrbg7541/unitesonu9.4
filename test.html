@@ -7,16 +7,33 @@
     <link href="https://fonts.googleapis.com/css2?family=Markazi+Text:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
-        /* --- Temel Sayfa Stilleri --- */
-        :root {
-            --accent-color: #007bff;
-            --success-color: #28a745;
-            --danger-color: #dc3545;
-            --bg-light: #f8f9fa;
-            --font-arabic: 'Markazi Text', 'Tahoma', 'Arial', sans-serif;
-            --btn-bg: #f0f0f0;
-            --btn-hover: #e0e0e0;
-        }
+       /* 1. ARAKOM.TTF dosyasını sisteme tanıtıyoruz */
+    @font-face {
+        font-family: 'Arakom';
+        src: url('ARAKOM.TTF') format('truetype');
+        font-weight: normal;
+        font-style: normal;
+    }
+
+    /* 2. Değişkenleri ve Fontu Zorluyoruz */
+    :root {
+        --accent-color: #007bff;
+        --success-color: #28a745;
+        --danger-color: #dc3545;
+        --bg-light: #f8f9fa;
+        
+        /* Fontu 'Arakom' olarak güncelledik */
+        --font-arabic: 'Arakom', 'Markazi Text', 'Tahoma', 'Arial', sans-serif;
+        
+        /* Diğer değişkenler aynen kalıyor */
+        --btn-bg: #f0f0f0;
+        --btn-hover: #e0e0e0;
+    }
+
+    /* 3. ÖNEMLİ: Body ve TÜM BUTONLAR için fontu zorluyoruz */
+    body, button, .question, .option {
+        font-family: var(--font-arabic) !important; /* !important ile baskın kıldık */
+    }
 
         body {
             font-family: var(--font-arabic);
@@ -523,7 +540,7 @@
             </svg>
         </button>
         
-        <button id="next-btn" class="nav-btn" title="التّالي">
+        <button id="next-btn" class="nav-btn" title="التالي">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                  <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/>
             </svg>
@@ -531,8 +548,7 @@
     </div>
 </div>
 
-    
-      <script>
+    <script>
         // --- ETKİNLİK VERİLERİ ---
       const activitiesData = [
     {
@@ -620,8 +636,6 @@
         ]
     }
 ];
-        // --- Elementler ---
-        // ... (Kalan JavaScript kodunuz değişmeden kalabilir)
 
         // --- Elementler ---
         const activityArea = document.getElementById('activity-area');
@@ -846,6 +860,7 @@
         }
         
         // --- BAŞLATMA FONKSİYONU ---
+        // --- BAŞLATMA FONKSİYONU ---
         function startActivity() {
             
             // 1. Tam Ekranı Talep Et
@@ -862,6 +877,16 @@
             // 3. Ses bağlamını başlat ve ses çal
             initAudioContext();
             playSound('touch');
+
+            // --- YENİ EKLENEN KISIM BAŞLANGIÇ ---
+            // 0.6 saniye (600ms) sonra ses dosyasını çal
+            setTimeout(function() {
+                var instructionAudio = new Audio('yonergetest.wav');
+                instructionAudio.play().catch(function(e) {
+                    console.log("Ses dosyası çalınamadı (Dosya ismi veya yolu hatalı olabilir):", e);
+                });
+            }, 600);
+            // --- YENİ EKLENEN KISIM BİTİŞ ---
 
             // 4. Oyunu Başlat
             prepareRounds();
@@ -922,7 +947,7 @@
             nextBtnSummary.className = 'summary-btn';
             
             if (currentRoundIndex + 1 >= allRounds.length) {
-                nextBtnSummary.textContent = "النّهاية"; 
+                nextBtnSummary.textContent = "النِّهايَة"; 
             } else {
                 nextBtnSummary.textContent = "الجَوْلَة التّالِيَة"; 
             }

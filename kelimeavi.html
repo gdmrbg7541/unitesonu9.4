@@ -8,12 +8,22 @@
     
     <style>
         /* --- Temel Sayfa Stilleri --- */
+        @font-face {
+            font-family: 'Arakom';
+            src: url('ARAKOM.TTF') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        /* --- Temel Sayfa Stilleri --- */
         :root {
             --accent-color: #0d6efd; 
             --success-color: #28a745;
             --danger-color: #dc3545;
             --bg-light: #f8f9fa;
-            --font-arabic: 'Markazi Text', 'Noto Naskh Arabic', 'Tahoma', 'Arial', sans-serif;
+            
+            /* GÜNCELLEME: Arapça fontu 'Arakom' olarak ayarlandı */
+            --font-arabic: 'Arakom', 'Markazi Text', 'Noto Naskh Arabic', 'Tahoma', 'Arial', sans-serif;
             
             /* GÜNCELLEME: Varsayılan (Masaüstü) boyutlar. JS bunları mobil için ezecek. */
             --grid-size-cols: 10;
@@ -441,10 +451,55 @@
     font-size: 1.5rem;
     font-family: var(--font-arabic);
 }
+/* --- YAMA: Giriş Ekranı Stilleri --- */
+#start-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #e9ecef;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 5000; /* Oyunun üstünde, yatay uyarı ekranının altında */
+}
+
+#start-button {
+    font-family: var(--font-arabic);
+    font-size: 4rem; /* Büyük, okunaklı yazı */
+    padding: 15px 80px;
+    background-color: var(--success-color); /* Yeşil renk */
+    color: white;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    transition: all 0.2s ease;
+    animation: pulseButton 2s infinite;
+}
+
+#start-button:active {
+    transform: scale(0.95);
+}
+
+@keyframes pulseButton {
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7); }
+    70% { transform: scale(1.05); box-shadow: 0 0 0 20px rgba(40, 167, 69, 0); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0); }
+}
+
+/* Oyun konteyneri başlangıçta gizli olacak, JS ile açacağız */
+.game-hidden {
+    display: none !important;
+}
 
     </style>
 </head>
 <body>
+<div id="start-overlay">
+    <button id="start-button">اِبْدَأْ</button>
+</div>
 
 <div id="orientation-warning">
     <div class="phone-icon"></div>
@@ -506,7 +561,6 @@
         // MASAÜSTÜ SEVİYELERİ (Orijinal 10x8 Izgara için)
         // MASAÜSTÜ SEVİYELERİ (Her biri 6 Kelime)
         // Dosya 1 (Meslekler/Akrabalar) ve Dosya 2 (Güzel Davranışlar) içeriğine göre düzenlenmiştir.
-        
         const desktopLevels = [
     // Seviye 1: Günlük Rutin Eylemleri (الأفعال اليومية)
     // Kaynak: PDF Sayfa 169, 171 (Metinlerde geçen fiiller)
@@ -571,13 +625,15 @@ const mobileLevels = [
         { word: 'أمس', color: colors[5], emoji: '📅' }           // Dün [cite: 77]
     ]
 ];
+
+        
         const arabicLetters = 'أبتثجحخدذرزسشصضطظعغفقكلمنهوي'.split('');
         
         // GÜNCELLEME: Izgara boyutları dinamik olarak ayarlanacak
-        const desktopGridCols = 12;
+        const desktopGridCols = 10;
         const desktopGridRows = 8;
         const mobileGridCols = 8;
-        const mobileGridRows = 10;
+        const mobileGridRows = 8;
         
         let activeGridCols;
         let activeGridRows;
@@ -731,61 +787,56 @@ const mobileLevels = [
         }
         
        function placeWords() {
-    const twoDirections = [{ dr: 1, dc: 0 }, { dr: 0, dc: 1 }];
-    const sortedWordData = [...wordData].sort((a, b) => b.processedWord.length - a.processedWord.length);
+            // SADECE MEVCUT İKİ YÖN KULLANILACAK
+            const twoDirections = [
+                { dr: 1, dc: 0 },   // Yukarıdan Aşağıya (Dikey)
+                { dr: 0, dc: 1 }    // Soldan Sağa (Yatay)
+            ];
+            
+            // Yerleştirme verimliliğini artırmak için kelimeleri uzunluklarına göre sıralayabiliriz.
+            const sortedWordData = [...wordData].sort((a, b) => b.processedWord.length - a.processedWord.length);
 
-    for (const data of sortedWordData) {
-        data.occupiedCells = []; // Hata almamak için her zaman boş bir diziyle başlat
-        const wordToPlace = data.processedWord; 
-        let placed = false;
-        let attempts = 0;
-        
-        while (!placed && attempts < 500) { 
-            attempts++;
-            const r = Math.floor(Math.random() * activeGridRows);
-            const c = Math.floor(Math.random() * activeGridCols);
-            const dir = twoDirections[Math.floor(Math.random() * twoDirections.length)];
+            for (const data of sortedWordData) {
+                const wordToPlace = data.processedWord; 
+                
+                let placed = false;
+                let attempts = 0;
+                
+                // Her deneme seti için yönleri rastgele karıştır
+                const shuffledDirections = [...twoDirections].sort(() => 0.5 - Math.random());
+                
+                // 200 deneme yap
+                while (!placed && attempts < 200) { 
+                    attempts++;
+                    
+                    const r = Math.floor(Math.random() * activeGridRows);
+                    const c = Math.floor(Math.random() * activeGridCols);
 
-            if (canPlaceWord(wordToPlace, r, c, dir)) { 
-                for (let j = 0; j < wordToPlace.length; j++) {
-                    const row = r + j * dir.dr;
-                    const col = c + j * dir.dc;
-                    grid[row][col] = wordToPlace[j];
-                    data.occupiedCells.push(`${row}-${col}`); // Hücreleri kaydet
+                    // Her denemede, karıştırılmış iki yönden birini kullan
+                    const dir = shuffledDirections[attempts % shuffledDirections.length];
+
+                    if (canPlaceWord(wordToPlace, r, c, dir)) { 
+                        for (let j = 0; j < wordToPlace.length; j++) {
+                            grid[r + j * dir.dr][c + j * dir.dc] = wordToPlace[j];
+                        }
+                        placed = true;
+                    }
                 }
-                placed = true;
             }
         }
-    }
-}
         
         function canPlaceWord(word, r, c, dir) {
             for (let i = 0; i < word.length; i++) {
                 const newRow = r + i * dir.dr;
                 const newCol = c + i * dir.dc;
 
-                // Izgara sınırları kontrolü
+                // GÜNCELLEME: Dinamik ızgara boyutları kullanılıyor
                 if (newRow >= activeGridRows || newCol >= activeGridCols || newRow < 0 || newCol < 0) {
                     return false;
                 }
-
-                // --- ÇAKIŞMA ÖNLEME MANTIĞI ---
-                // Sadece hedef hücrenin değil, çevresindeki 1 hücrelik alanın da boş olduğunu kontrol et
-                for (let dr = -1; dr <= 1; dr++) {
-                    for (let dc = -1; dc <= 1; dc++) {
-                        const checkRow = newRow + dr;
-                        const checkCol = newCol + dc;
-
-                        // Izgara sınırları içindeki komşu hücreleri kontrol et
-                        if (checkRow >= 0 && checkRow < activeGridRows && 
-                            checkCol >= 0 && checkCol < activeGridCols) {
-                            
-                            // Eğer bu hücrede zaten bir harf varsa, yeni kelime buraya veya yakınına gelemez
-                            if (grid[checkRow][checkCol] !== null) {
-                                return false;
-                            }
-                        }
-                    }
+                const cell = grid[newRow][newCol];
+                if (cell !== null) { 
+                    return false;
                 }
             }
             return true;
@@ -939,75 +990,39 @@ const mobileLevels = [
         // --- KONTROL MANTIĞI (GÜNCELLENDİ) ---
         
         function checkSelection() {
-    if (currentSelection.length < 2) return;
-    
-    // YENİ KONTROL: Seçilen hücrelerden herhangi biri zaten başka bir kelimeye ait mi?
-    const hasAlreadyFoundCell = currentSelection.some(cell => cell.classList.contains('found'));
-    
-    // Eğer seçilen hücrelerin içinde zaten "bulunmuş" bir harf varsa seçimi iptal et
-    if (hasAlreadyFoundCell) {
-        playSound('incorrect');
-        return; 
-    }
-
-    const selectedWordRaw = currentSelection.map(cell => cell.textContent).join(''); 
-    const selectedWordRev = selectedWordRaw.split('').reverse().join('');
-    const selectedLength = currentSelection.length;
-    const selectedCoords = currentSelection.map(c => `${c.dataset.row}-${c.dataset.col}`).sort();
-
-    let found = false;
-    
-    for (const data of wordData) {
-        if (foundWords.includes(data.word)) continue; 
-        
-        const processed = data.processedWord;
-        const wordCoords = [...data.occupiedCells].sort();
-
-        // 1. Koordinat Eşleşmesi (Tam isabet - والدة için والدة seçilmeli)
-        if (JSON.stringify(selectedCoords) === JSON.stringify(wordCoords)) {
-            markAsFound(data.word);
-            found = true;
-            break;
-        }
-        
-        // 2. Rastgele Oluşan Kelime Kontrolü (Hala ihtiyaç varsa)
-        // Uzunluk tam uymalı ve daha uzun bir kelimenin parçası olmamalı
-        if ((selectedWordRaw === processed || selectedWordRev === processed) && 
-            selectedLength === processed.length) {
+            if (currentSelection.length < 2) return;
             
-            if (!isPartialOfLongerWord(currentSelection)) {
-                markAsFound(data.word);
-                found = true;
-                break;
+            // YENİ: Kullanıcının ızgaradan seçtiği kelime
+            const selectedWordRaw = currentSelection.map(cell => cell.textContent).join(''); 
+            
+            let found = false;
+            
+            for (const data of wordData) {
+                const originalWord = data.word;         // Orijinal (şeddeli olabilen) kelime
+                const processedWord = data.processedWord; // Izgarada yer alan (şeddesiz) kelime
+                
+                if (foundWords.includes(originalWord)) continue; 
+                
+                // Seçilen ham kelimeyi şeddesiz kelimeyle karşılaştır
+                if (selectedWordRaw === processedWord) {
+                    markAsFound(originalWord); // Orijinal kelimeyi buldu olarak işaretle
+                    found = true;
+                    break;
+                }
+                
+                // Tersine döndürülmüş kelime kontrolü
+                const processedWordReversed = processedWord.split('').reverse().join('');
+                if (selectedWordRaw === processedWordReversed) {
+                    markAsFound(originalWord); // Orijinal kelimeyi buldu olarak işaretle
+                    found = true;
+                    break;
+                }
+            }
+            
+            if (!found) {
+                playSound('incorrect');
             }
         }
-    }
-    
-    if (!found) {
-        playSound('incorrect');
-    }
-}
-
-        // Seçilen hücrelerin, henüz bulunmamış daha uzun bir kelimenin parçası olup olmadığını kontrol eder
-        function isPartialOfLongerWord(selection) {
-    const selectedCoords = selection.map(c => `${c.dataset.row}-${c.dataset.col}`);
-    
-    for (const data of wordData) {
-        // Kelime bulunmuşsa veya koordinat verisi yoksa atla
-        if (foundWords.includes(data.word) || !data.occupiedCells) continue;
-        
-        // Seçilen hücrelerin koordinatları, kontrol edilen kelimenin içindeyse true döner
-        const isSubset = selectedCoords.every(coord => 
-            data.occupiedCells && data.occupiedCells.includes(coord)
-        );
-        
-        // Eğer seçilen alan daha uzun bir kelimenin parçasıysa (alt kümesiyse) reddet
-        if (isSubset && selectedCoords.length < data.occupiedCells.length) {
-            return true; 
-        }
-    }
-    return false;
-}
         
         function markAsFound(word) {
             playSound('correct');
@@ -1094,32 +1109,63 @@ const mobileLevels = [
             document.addEventListener('msfullscreenchange', handleFullscreenChange);
         }
         
-        // --- Başlangıç ---
-        document.addEventListener('DOMContentLoaded', () => {
-            
-            // GÜNCELLEME: Cihaza göre ayarları yükle
-            if (isMobileDevice()) {
-                activeLevelSet = mobileLevels;
-                activeGridCols = mobileGridCols;
-                activeGridRows = mobileGridRows;
-            } else {
-                activeLevelSet = desktopLevels;
-                activeGridCols = desktopGridCols;
-                activeGridRows = desktopGridRows;
-            }
-            
-            // Şedde dönüşümünü tüm seviyelere uygula
-            activeLevelSet = preprocessLevels(activeLevelSet); 
+        
+        // --- DÜZELTME: Güncellenmiş JavaScript ---
+document.addEventListener('DOMContentLoaded', () => {
+    
+    // 1. Cihaz ve Izgara Ayarları
+    if (isMobileDevice()) {
+        activeLevelSet = mobileLevels;
+        activeGridCols = mobileGridCols;
+        activeGridRows = mobileGridRows;
+    } else {
+        activeLevelSet = desktopLevels;
+        activeGridCols = desktopGridCols;
+        activeGridRows = desktopGridRows;
+    }
+    
+    // Şedde işlemleri
+    activeLevelSet = preprocessLevels(activeLevelSet); 
 
-            // GÜNCELLEME: CSS değişkenlerini dinamik olarak ayarla
-            const rootStyle = document.documentElement.style;
-            rootStyle.setProperty('--grid-size-cols', activeGridCols);
-            rootStyle.setProperty('--grid-size-rows', activeGridRows);
+    // CSS Değişkenleri
+    const rootStyle = document.documentElement.style;
+    rootStyle.setProperty('--grid-size-cols', activeGridCols);
+    rootStyle.setProperty('--grid-size-rows', activeGridRows);
 
-            // Oyunu başlat
-            initializeGame();
-            setupFullscreen(); 
-        });
+    // --- ÖNEMLİ DÜZELTME BURADA ---
+    // Oyun alanını seç ve başlangıçta gizlemek için sınıf ekle
+    const gameContainer = document.querySelector('.activity-container');
+    gameContainer.classList.add('game-hidden');
+
+    // Oyunu arka planda hazırla
+    initializeGame();
+    setupFullscreen();
+
+    // Başlat Butonu Mantığı
+    const startBtn = document.getElementById('start-button');
+    const startOverlay = document.getElementById('start-overlay');
+
+    startBtn.addEventListener('click', () => {
+        // A. Tam Ekranı Tetikle
+        const el = document.documentElement;
+        if (el.requestFullscreen) el.requestFullscreen();
+        else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+        else if (el.msRequestFullscreen) el.msRequestFullscreen();
+
+        // B. Giriş ekranını gizle, OYUNU GÖSTER (Sınıfı kaldırarak)
+        startOverlay.style.display = 'none';
+        gameContainer.classList.remove('game-hidden'); // Gizleyen kilidi kaldır
+        
+        // Ses sistemini başlat
+        initAudioContext();
+
+        // C. 0.6 Saniye Bekle ve Yönerge Sesini Çal
+        setTimeout(() => {
+            const audio = new Audio('yonergeav.wav');
+            audio.play().catch(e => console.log("Ses çalma hatası:", e));
+        }, 600);
+    });
+});
 
     </script>
 

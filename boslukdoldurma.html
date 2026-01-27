@@ -7,14 +7,30 @@
     <link href="https://fonts.googleapis.com/css2?family=Markazi+Text:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
-        /* [MEVCUT CSS STİLLERİ BURAYA GELİR] */
-        :root {
-            --accent-color: #007bff;
-            --success-color: #28a745;
-            --danger-color: #dc3545;
-            --bg-light: #f8f9fa;
-            --font-arabic: 'Markazi Text', 'Tahoma', 'Arial', sans-serif;
-        }
+        /* 1. ARAKOM.TTF dosyasını sisteme tanıtıyoruz */
+    @font-face {
+        font-family: 'Arakom';
+        src: url('ARAKOM.TTF') format('truetype');
+        font-weight: normal;
+        font-style: normal;
+    }
+
+    /* 2. Değişkenleri ve Fontu Zorluyoruz */
+    :root {
+        --accent-color: #007bff;
+        --success-color: #28a745;
+        --danger-color: #dc3545;
+        --bg-light: #f8f9fa;
+        
+        /* Fontu 'Arakom' olarak güncelledik */
+        --font-arabic: 'Arakom', 'Markazi Text', 'Tahoma', 'Arial', sans-serif;
+    }
+
+    /* 3. ÖNEMLİ: Body ve TÜM BUTONLAR için fontu zorluyoruz */
+    body, button, input, .key, .answer-input {
+        font-family: var(--font-arabic) !important; /* !important ile baskın kıldık */
+        font-weight: 400;
+    }
 
         body {
             font-family: var(--font-arabic);
@@ -37,7 +53,7 @@
     border-radius: 12px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     overflow: hidden;
-    display: flex;
+    display: none;
     flex-direction: column;
     
     /* GÜNCELLEME: Minimum genişlik ve yükseklik eklendi */
@@ -447,18 +463,18 @@
         }
         #replay-button:hover { transform: rotate(-90deg); background-color: #f0f0f0; }
         
-        /* 🔥 BAŞLANGIÇ EKRANI STİLİ */
         #start-screen {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: #ffffff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            border-radius: 12px;
-        }
+    position: fixed; /* Absolute yerine Fixed */
+    top: 0; 
+    left: 0;
+    width: 100vw; 
+    height: 100vh;
+    background: #e9ecef; /* Sayfa arka plan rengiyle aynı olsun */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000; /* En üstte durması için artırdık */
+}
         
         #start-button {
             padding: 20px 40px; 
@@ -655,8 +671,7 @@
     </style>
 </head>
 <body>
-
-    <div class="activity-container">
+<div class="activity-container" id="main-container" style="display: none;">
         
         <div class="header">
             <div class="progress-container">
@@ -695,13 +710,12 @@
                 <button id="feedback-ok-button">✔</button>
             </div>
         </div>
-        
-        <div id="start-screen">
-            <button id="start-button">
-                اِبْدَأْ
-            </button>
-        </div>
-        </div>
+
+    </div> <div id="start-screen">
+        <button id="start-button">
+            اِبْدَأْ
+        </button>
+    </div>
     
     <div id="rotate-message">
         <div class="phone-animation">
@@ -709,7 +723,6 @@
                 <path d="M17 1H7C5.9 1 5 1.9 5 3v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-2-2-2zm-2 20H9v-1h6v1zm2-3H7V6h10v12z" />
             </svg>
         </div>
-       
     </div>
 
     <script>
@@ -763,7 +776,7 @@
             ["Backspace", "ظ","ز","و","ة","ى","ر","ؤ","ء","ئ"] 
         ];
 
-       const activitiesData = [
+  const activitiesData = [
     // 1. Soru Edatı
     { 
         pre: "ماذا فَعَلْتَ", 
@@ -1283,7 +1296,7 @@
                 // 🔥 YAMA BAŞLANGICI: Geri bildirimde gizlenecek basitleştirilmiş kelimeler
                 // Bu kelimeler, asıl hemzeli/elifli formları kabul etmek için eklenmiş
                 // klavye dostu, basitleştirilmiş versiyonlardır ve geri bildirimde gösterilmeyecektir.
-                const variantsToExclude = ["اَسْمَعُ","الاَحْمَر","الاَخْضَر","الاَصْفَر", "اَرى", "اَشْعُرُ", "اَشُمُّ", "اَلْمِسُ","اَذوقُ","اَصْدِقائي"];
+                const variantsToExclude = ["اَسْمَعُ","اَرْبَعَة","اجلس","اَصْفَر", "اكتب", " اَحْمَر", "عَشَر", " اَزْرَق","اَذوقُ","اَصْدِقائي"];
                 
                 // Cevap listesini filtrele: Sadece ana (canonical) kelimeleri bırakır.
                 const canonicalAnswers = Array.isArray(correctAnswer) 
@@ -1395,20 +1408,40 @@
         
         // 🔥 YENİ BAŞLANGIÇ FONKSİYONU
         function startGame() {
-            playSound('touch');
-            startScreen.style.display = 'none'; // Başlangıç ekranını gizle
-            document.body.classList.add('game-started'); // Oyun içeriğini gösteren sınıfı ekle
-            
-            // Tam ekranı etkinleştir
-            toggleFullScreen(); 
-            
-            // Oyunu başlat
-            allActivitiesData = shuffle([...activitiesData]);
-            totalQuestionsInGame = allActivitiesData.length;
-            totalRounds = Math.ceil(totalQuestionsInGame / questionsPerRound);
-            currentRound = 0; 
-            startNextRound(); 
-        }
+    // 1. Dokunma sesini çal
+    playSound('touch');
+
+    // 2. Başlangıç ekranını kapat
+    const startScreen = document.getElementById('start-screen');
+    startScreen.style.display = 'none';
+
+    // 3. Ana konteynırı GÖRÜNÜR yap (HTML'de display:none vermiştik, şimdi açıyoruz)
+    const container = document.querySelector('.activity-container');
+    if (container) {
+        container.style.display = 'flex'; // Gizli olan kutuyu geri getir
+    }
+
+    // 4. CSS animasyonları için gerekli sınıfı ekle
+    document.body.classList.add('game-started');
+    
+    // 5. Tam ekranı etkinleştir
+    toggleFullScreen(); 
+    
+    // 6. Oyun mantığını başlat
+    allActivitiesData = shuffle([...activitiesData]);
+    totalQuestionsInGame = allActivitiesData.length;
+    totalRounds = Math.ceil(totalQuestionsInGame / questionsPerRound);
+    currentRound = 0; 
+    startNextRound(); 
+
+    // 7. 🔥 YAMA: 0.6 Saniye (600ms) Gecikmeli Ses Çalma
+    setTimeout(() => {
+        const audio = new Audio('yonergebosluk.wav');
+        audio.play().catch(err => {
+            console.log("Ses çalma hatası (Dosya adını ve yolunu kontrol edin):", err);
+        });
+    }, 600); 
+}
 
         document.addEventListener('DOMContentLoaded', () => {
             // Başlangıç düğmesine tıklama olayını ekle
