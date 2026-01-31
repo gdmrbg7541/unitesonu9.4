@@ -200,10 +200,10 @@
     {
         questions: [
             { q: "مَتى اسْتَيْقَظْتَ؟", a: "اِسْتَيْقَظْتُ صَباحًا." },          // Ne zaman uyandın? -> Sabah uyandım.
-            { q: "ماذا فَعَلْتَ بَعْد النَّوْم؟", a: "تَوَضَّأْتُ وَصَلَّيْتُ الفَجْر." }, // Uyuduktan sonra ne yaptın? -> Abdest alıp sabah namazı kıldım.
-            { q: "ماذا تَناوَلْتَ؟", a: "تَناوَلْتُ الفُطور." },              // Ne yedin? -> Kahvaltı yaptım.
-            { q: "هَلْ خَرَجْتَ مِن البَيْت؟", a: "نَعَم، خَرَجْتُ مِن البَيْت." }, // Evden çıktın mı? -> Evet, evden çıktım.
-            { q: "أَيْن ذَهَبْتَ صَباحًا؟", a: "ذَهَبْتُ إِلى المَدْرَسَة." }  // Sabah nereye gittin? -> Okula gittim.
+            { q: "ثُمّ ماذا فَعَلْتَ؟", a: "تَوَضَّأْتُ وَصَلَّيْتُ الفَجْر." }, // Uyuduktan sonra ne yaptın? -> Abdest alıp sabah namazı kıldım.
+            { q: "ماذا تَناوَلْتَ؟", a: "تَناوَلْتُ الفَطور." },              // Ne yedin? -> Kahvaltı yaptım.
+            { q: "هَلْ خَرَجْتَ مِن البَيْت؟", a: "نَعَمْ، خَرَجْتُ مِن البَيْت." }, // Evden çıktın mı? -> Evet, evden çıktım.
+            { q: "إِلى أَيْن ذَهَبْتَ صَباحًا؟", a: "ذَهَبْتُ إِلى المَدْرَسَة." }  // Sabah nereye gittin? -> Okula gittim.
         ],
         distractor: "مَساءً" // Çeldirici: Akşam (Sabah rutini için yanlış zaman)
     },
@@ -212,11 +212,11 @@
     // Araç kullanımı ve okula gidiş detayları.
     {
         questions: [
-            { q: "كَيْف ذَهَبْتَ إِلى المَدْرَسَة؟", a: "رَكِبْتُ الحافِلَة." }, // Okula nasıl gittin? -> Otobüse bindim.
+            { q: "كَيْف ذَهَبْتَ إِلى المَدْرَسَة؟", a: "ذَهَبْتُ بِالحافِلَة." }, // Okula nasıl gittin? -> Otobüse bindim.
             { q: "مَتى رَكِبْتَ الحافِلَة؟", a: "في السّاعَة الثّامِنَة." },   // Otobüse ne zaman bindin? -> Saat 8'de.
-            { q: "ماذا فَعَلْتَ في المَدْرَسَة؟", a: "دَرَسْتُ اللُّغَةِ العَرَبِيَّة." }, // Okulda ne yaptın? -> Arapça çalıştım.
+            { q: "ماذا فَعَلْتَ في المَدْرَسَة؟", a: "دَرَسْتُ اللُّغَة العَرَبِيَّة." }, // Okulda ne yaptın? -> Arapça çalıştım.
             { q: "أَيْن لَعِبْتَ؟", a: "لَعِبْتُ في حَديقَة المَدْرَسَة." },   // Nerede oynadın? -> Okul bahçesinde.
-            { q: "هَل قَرَأْت القُرْآن؟", a: "نَعَم، قَرَأْتُ القُرْآن الكَريم." } // Kuran okudun mu? -> Evet...
+            { q: "هَلْ قَرَأْتَ القُرْآن؟", a: "نَعَمْ، قَرَأْتُ القُرْآن." } // Kuran okudun mu? -> Evet...
         ],
         distractor: "المُسْتَشْفى" // Çeldirici: Hastane (Okul bağlamı dışı)
     },
@@ -226,11 +226,11 @@
     // Sadece saat sormak yerine; ne okuduğu, kim olduğu ve ne zaman ödev yaptığı gibi çeşitlendirildi.
     {
         questions: [
-            { q: "ماذا قَرَأْتَ اليَوْم؟", a: "قَرَأْتُ القُرْآن الكَريم." },      // Bugün ne okudun? -> Kuran-ı Kerim okudum.
-            { q: "مَن هِيَ مَرْوَة؟", a: "هِيَ أُخْت عاصِم." },                    // Merve kimdir? -> Asım'ın kız kardeşidir.
-            { q: "أَيْن يَدْرُسُ عاصِم؟", a: "في المَدْرَسَة الثّانَوِيَّة." },     // Asım nerede okuyor? -> Lisede.
+            { q: "إِلى أَيْن ذَهَبْتَ أَمْس؟", a: "ذَهَبْتُ إِلى المَسْجِد." },
+            { q: "مَن هَذِه؟", a: "هَذِهِ أُخْت عاصِم." },                    // Merve kimdir? -> Asım'ın kız kardeşidir.
+            { q: "أَيْن يَدْرُسُ عاصِم؟", a: "في الثّانَوِيَّة." },     // Asım nerede okuyor? -> Lisede.
             { q: "مَتى كَتَبْتَ واجِباتِكَ؟", a: "كَتَبْتُ واجِباتي مَساءً." },     // Ödevlerini ne zaman yazdın? -> Ödevlerimi akşam yazdım. (Saat yerine vakit ismi)
-            { q: "مَتى تَناوَلْتَ الفُطور؟", a: "في السّاعَة السّادِسَة." }      // Kahvaltıyı ne zaman yaptın? -> Saat 6'da. (Tek bir net saat sorusu bıraktık)
+            { q: "مَتى تَناوَلْتَ الفَطور؟", a: "في السّاعَة السّابِعَة." }      // Kahvaltıyı ne zaman yaptın? -> Saat 6'da. (Tek bir net saat sorusu bıraktık)
         ],
         distractor: "الحافِلَة" // Çeldirici: Otobüs (Bu sorulara mantıksız bir cevap)
     },
@@ -238,11 +238,11 @@
     // 3. Tekil şahıs (Müzekker/Müennes) ayrımı.
     {
         questions: [
-            { q: "مَنْ هُو عاصِم؟", a: "هُو طالِب في الثّانَوِيَّة." },            // Asım kimdir? -> Lisede öğrencidir.
-            { q: "مَع مَنْ لَعِبَ عاصِم؟", a: "لَعِبَ مَع صَديقه." },          // Asım kimle oynadı? -> Arkadaşıyla.
-            { q: "ماذا فَعَلَتْ مَرْوَة؟", a: "هِيَ ذاكَرَتْ دُروسَها." },        // Merve ne yaptı? -> Derslerini çalıştı.
-            { q: "أَيْن ذَهَبَتْ نورَة؟", a: "ذَهَبَتْ إِلى قونْيا." },        // Nura nereye gitti? -> Konya'ya.
-            { q: "أَيْن ذَهَبَ حَسَن؟", a: "ذَهَبَ إِلى المُسْتَشْفى." }         // Hasan nereye gitti? -> Hastaneye.
+            { q: "مَن عاصِم؟", a: "هُو طالِب في الثّانَوِيَّة." },            // Asım kimdir? -> Lisede öğrencidir.
+            { q: "مَع مَن لَعِبَ عاصِم؟", a: "لَعِبَ مَع صَديقِه." },          // Asım kimle oynadı? -> Arkadaşıyla.
+            { q: "ماذا فَعَلَتْ عائِشَة؟", a: "هِيَ ذاكَرَتْ دُروسَها." },        // Merve ne yaptı? -> Derslerini çalıştı.
+            { q: "أَيْن ذَهَبَتْ نورَة؟", a: "ذَهَبَتْ إِلى وان." },        // Nura nereye gitti? -> Konya'ya.
+            { q: "إِلى أَيْن ذَهَبَ حَسَن؟", a: "ذَهَبَ إِلى المُسْتَشْفى." }         // Hasan nereye gitti? -> Hastaneye.
         ],
         distractor: " أَنا طالِب" // Çeldirici: Ben (Sorular 'O' hakkında olduğu için 'Ben' yanlıştır)
     }
