@@ -7,8 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Markazi+Text:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
-        /* 1. ARAKOM.TTF dosyasını sisteme tanıtıyoruz */
-    @font-face {
+        @font-face {
         font-family: 'Arakom';
         src: url('ARAKOM.TTF') format('truetype'),
              url('arakom.ttf') format('truetype'),
@@ -17,22 +16,16 @@
         font-style: normal;
     }
 
-    /* 2. Değişkenleri ve Fontu Zorluyoruz */
-    :root {
-        --accent-color: #007bff;
-        --success-color: #28a745;
-        --danger-color: #dc3545;
-        --bg-light: #f8f9fa;
-        
-        /* Fontu 'Arakom' olarak güncelledik */
-        --font-arabic: 'Arakom', 'Markazi Text', 'Tahoma', 'Arial', sans-serif;
-    }
-
-    /* 3. ÖNEMLİ: Body, Butonlar ve Kelime Kartları için fontu zorluyoruz */
-    body, button, .word-item {
-        font-family: var(--font-arabic) !important; /* !important ile baskın kıldık */
-    }
-
+        /* --- Temel Sayfa Stilleri --- */
+        :root {
+            --accent-color: #007bff;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --bg-light: #f8f9fa;
+            
+            /* GÜNCELLEME: Font 'Arakom' olarak değiştirildi */
+            --font-arabic: 'Arakom', 'Markazi Text', 'Tahoma', 'Arial', sans-serif;
+        }
         body {
             font-family: var(--font-arabic);
             background-color: #e9ecef;
@@ -725,7 +718,7 @@
                 // المُوَاصَلات (Ulaşım Araçları)
                 { w: "وُضوء", cat: "العِبادات" },           // Abdest
                 { w: "صَلاة", cat: "العِبادات" },           // Namaz
-                { w: "قُرْآن", cat: "العِبادات" },           // Kuran
+                { w: "تِلاوَة القُرْآن", cat: "العِبادات" },           // Kuran
                 { w: "دُعاء", cat: "العِبادات" },
 
                 // الظُّرُوف (Zaman Zarfları / Durumlar)
@@ -967,15 +960,14 @@
             });
         }
 
-        // --- DOĞRU CEVAP İŞLEMİ ---
+// --- DOĞRU CEVAP İŞLEMİ ---
         function handleSuccess(wordElement, category) {
             playSound('correct');
             wordElement.classList.add('correct');
             wordElement.classList.remove('incorrect');
             wordElement.draggable = false;
             
-            // Metni dönüştür
-            transformWordText(wordElement, category);
+            // Metin dönüştürme kodu kaldırıldı. Kelime olduğu gibi kalacak.
 
             checkGameCompletion();
         }

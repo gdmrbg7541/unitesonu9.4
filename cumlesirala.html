@@ -7,11 +7,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Markazi+Text:wght@400;700&family=Noto+Naskh+Arabic:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
-       
-    /* 1. ARAKOM.TTF dosyasını sisteme tanıtıyoruz */
-    @font-face {
+      @font-face {
         font-family: 'Arakom';
-        /* Tarayıcı sırayla dener: Önce hepsi büyük, sonra hepsi küçük, sonra baş harfi büyük */
         src: url('ARAKOM.TTF') format('truetype'),
              url('arakom.ttf') format('truetype'),
              url('Arakom.ttf') format('truetype');
@@ -19,21 +16,17 @@
         font-style: normal;
     }
 
-    /* 2. Değişkenleri ve Fontu Zorluyoruz */
-    :root {
-        --accent-color: #007bff;
-        --success-color: #28a745;
-        --danger-color: #dc3545;
-        --bg-light: #f8f9fa;
-        
-        /* Fontu 'Arakom' olarak güncelledik */
-        --font-arabic: 'Arakom', 'Markazi Text', 'Noto Naskh Arabic', 'Tahoma', 'Arial', sans-serif;
-    }
+        /* --- Temel Sayfa Stilleri --- */
+        :root {
+            --accent-color: #007bff;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --bg-light: #f8f9fa;
+            
+            /* GÜNCELLEME: Font 'Arakom' olarak değiştirildi */
+            --font-arabic: 'Arakom', 'Noto Naskh Arabic', 'Tahoma', 'Arial', sans-serif;
+        }
 
-    /* 3. ÖNEMLİ: Body ve TÜM BUTONLAR için fontu zorluyoruz */
-    body, button, .word-item {
-        font-family: var(--font-arabic) !important; /* !important ile baskın kıldık */
-    }
         body {
             font-family: var(--font-arabic);
             background-color: #e9ecef;
@@ -708,10 +701,10 @@ const activitiesData = [
     // 13. TOKLUK VE ŞÜKÜR
     {
         "s": [
-            "أَنا شَبْعان الحَمْد لِلّٰهِ",
-            "الحَمْد لِلّٰهِ أَنا شَبْعان"
+            "أَنا شَبْعان الحَمْد الله",
+            "الحَمْد الله أَنا شَبْعان"
         ],
-        "w": ["أَنا", "شَبْعان", "الحَمْد", "لِلّٰهِ"]
+        "w": ["الله", "أَنا", "شَبْعان", "الحَمْد"]
     },
 
     // 14. EVE DÖNÜŞ
@@ -1033,7 +1026,7 @@ const activitiesData = [
             });
         }
 
-        // --- CEVAP KONTROLÜ ---
+// --- CEVAP KONTROLÜ ---
         function checkScrambleAnswer(correctAnswers) {
             const dropZone = document.getElementById('drop-zone');
             const words = Array.from(dropZone.children).map(item => item.textContent);
@@ -1047,7 +1040,7 @@ const activitiesData = [
             
             if (isCorrect) {
                 scoreCorrect++;
-                playSound('correct'); 
+                playSound('correct');
                 dropZone.classList.add('drop-zone-correct'); 
                 
                 document.getElementById('check-scramble-btn').style.display = 'none';
@@ -1058,22 +1051,17 @@ const activitiesData = [
 
                 document.getElementById('next-activity-btn').style.display = 'flex';
                 
-                toggleWordDrag(false); 
-                
+                toggleWordDrag(false);
             } else {
                 scoreIncorrect++;
-                playSound('incorrect'); 
+                playSound('incorrect');
                 dropZone.classList.add('drop-zone-incorrect');
                 
                 const hintBtn = document.getElementById('hint-btn');
                 if (hintBtn) hintBtn.style.visibility = 'visible';
                 
-                setTimeout(() => {
-                const introAudio = document.getElementById('intro-sound');
-                if(introAudio) {
-                    introAudio.play().catch(e => console.log("Ses hatası:", e));
-                }
-            }, 2000);
+                // BURADAKİ SETTIMEOUT KODU SİLİNDİ.
+                // ARTIK YANLIŞ YAPINCA SES TEKRAR ÇALMAYACAK.
             }
         }
 
